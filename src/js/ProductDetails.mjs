@@ -9,7 +9,13 @@ export default class ProductDetails {
 
   async init() {
     this.product = await this.dataSource.findProductById(this.productId);
-    this.renderProductDetails();
+    
+    // Asegurar que el DOM está listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.renderProductDetails());
+    } else {
+      this.renderProductDetails();
+    }
     
     document.getElementById('addToCart')
       .addEventListener('click', this.addToCart.bind(this));
@@ -28,12 +34,33 @@ export default class ProductDetails {
   }
 
   renderProductDetails() {
-    document.querySelector('#productBrand').innerText = this.product.Brand.Name;
-    document.querySelector('#productName').innerText = this.product.NameWithoutBrand;
-    document.querySelector('#productImage').src = this.product.Image;
-    document.querySelector('#productImage').alt = this.product.Name;
-    document.querySelector('#productPrice').innerText = `$${this.product.FinalPrice}`;
-    document.querySelector('#productDescription').innerHTML = this.product.DescriptionHtmlSimple;
-    document.querySelector('#addToCart').dataset.id = this.product.Id;
+    console.log('Rendering product details...');
+    
+    // Verificar que los elementos existen
+    const brandEl = document.querySelector('#productBrand');
+    const nameEl = document.querySelector('#productName');
+    const imgEl = document.querySelector('#productImage');
+    const priceEl = document.querySelector('#productPrice');
+    const descEl = document.querySelector('#productDescription');
+    const btnEl = document.querySelector('#addToCart');
+    
+    console.log('Elementos encontrados:', { brandEl, nameEl, imgEl, priceEl, descEl, btnEl });
+    
+    if (!imgEl) {
+      console.error('❌ No se encontró #productImage');
+      return;
+    }
+    
+    const imageFileName = this.product.Image.split('/').pop();
+    
+    brandEl.innerText = this.product.Brand.Name;
+    nameEl.innerText = this.product.NameWithoutBrand;
+    imgEl.src = `/images/${imageFileName}`;
+    imgEl.alt = this.product.Name;
+    priceEl.innerText = `$${this.product.FinalPrice}`;
+    descEl.innerHTML = this.product.DescriptionHtmlSimple;
+    btnEl.dataset.id = this.product.Id;
+    
+    console.log('✅ Producto renderizado correctamente');
   }
 }
