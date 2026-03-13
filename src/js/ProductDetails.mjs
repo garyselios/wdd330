@@ -33,7 +33,6 @@ export default class ProductDetails {
   renderProductDetails() {
     document.querySelector('#productBrand').innerText = this.product.Brand.Name;
     document.querySelector('#productName').innerText = this.product.NameWithoutBrand;
-    // Usar la ruta original que funcionaba
     document.querySelector('#productImage').src = this.product.Image;
     document.querySelector('#productImage').alt = this.product.Name;
     document.querySelector('#productPrice').innerText = `$${this.product.FinalPrice}`;
